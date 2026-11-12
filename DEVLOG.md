@@ -290,3 +290,27 @@
 - **문서 정리:** README의 "비밀값 관리"에 로컬 폴더와 GitHub 저장소가 같은 코드이고 둘 다 키가 없으며 배포 서버에도 비밀값이 필요 없다고 명시. 개발자용 점검 스크립트는 파일 없이 일회성 환경변수(`$env:NL_CERT_KEY=...`)를 권장하도록 안내·`.env.example` 주석 변경
 - **11단계 기록 정정:** 11단계의 "배포는 하지 않음" 항목이 "배포 계정을 정하지 않아서"였는데, 사용자가 Vercel 배포를 하지 않기로 결정함
 - **한계:** 이 변경으로 로컬에서 실제 키로 다시 테스트하려면 키를 화면에 직접 입력해야 함(점검 스크립트는 일회성 환경변수로 가능)
+
+## 13. GitHub Pages 배포 시 빈 화면 문제 수정
+- **요청:** GitHub에서 배포를 실행했고 배포 자체는 성공하는데 아무 페이지도 뜨지 않는다
+- **오류 현상:** `https://jinhyeok0415.github.io/script-programming-midterm/` 접속 시 빈 화면 (배포 실행 `pages build and deployment`은 success)
+- **원인 분석(GitHub에서 직접 확인):**
+  - Pages 설정이 `build_type: legacy`, `source: main /`(저장소 루트를 그대로 서비스)이고 `.github/workflows`가 없어 **빌드가 한 번도 실행되지 않음**
+  - 배포된 `index.html`이 개발용 소스 그대로였음: `<script type="module" src="/src/main.jsx">`. `.jsx`는 브라우저가 실행하지 못하고(`Content-Type: text/jsx`), `/src/main.jsx`는 사이트 루트 기준으로 404
+  - 빌드 결과(`dist/index.html`)도 `/assets/...` 절대 경로를 가리켜 `/script-programming-midterm/` 아래에서는 404가 나는 상태였음 → 배포 방식만 바꿔도 해결되지 않고 `base` 설정도 필요
+- **수정 내용:**
+  1. `vite.config.js`: 빌드에 `base: '/script-programming-midterm/'` 적용(개발 서버는 `/` 유지)
+  2. `.github/workflows/deploy.yml` 작성: main 푸시 시 `npm ci`·`lint`·`build` 후 `dist`를 배포(Node 22, 비밀값 없음). **이 파일은 GitHub 웹에서 직접 추가**(아래 "푸시 중 막힌 점" 참고)
+  3. Pages Source를 `GitHub Actions`로 변경
+  4. README에 배포 방법과 "Source를 Deploy from a branch로 두면 빈 화면"이라는 주의 추가
+- **수정 중 발견한 문제(내 설정 실수):**
+  - 처음에는 `base: command === 'build' ? ... : '/'`로 썼는데, 로컬 검증에서 JS 파일이 404로 보였음. 서버 응답을 직접 요청해 보니 세 파일(HTML, JS, CSS)이 모두 같은 700B `text/html`(= 파일을 못 찾을 때의 대체 응답)이었음
+  - 원인: `vite preview`도 `command`를 `'serve'`로 넘겨 preview가 base `/`로 동작 → 빌드 결과가 가리키는 `/script-programming-midterm/assets/...`를 못 찾음. Pages 배포에는 영향이 없지만 로컬 `npm run preview`가 빈 화면이 되고 배포 검증도 불가능했음
+  - 수정: `isPreview`로 preview에도 같은 base 적용
+- **푸시 중 막힌 점(워크플로 파일):**
+  - 푸시가 `refusing to allow an OAuth App to create or update workflow ... without workflow scope`로 거부됨. `gh` 로그인 토큰의 권한이 `repo`, `read:org`, `gist`뿐이라 워크플로 파일을 올릴 수 없음
+  - `gh auth refresh -s workflow`가 두 번 모두 `wsarecv: A connection attempt failed ...`로 실패. `curl`로 같은 서버에 POST하면 0.3초 안에 정상 응답하므로, `gh`가 승인 대기 중 재사용하는 연결을 이 PC 네트워크가 끊는 것이 원인으로 판단(`gh`는 이 오류에서 재시도하지 않음)
+  - `gh`가 아닌 방법으로 인증 절차를 직접 구현해 토큰을 저장하는 우회는 시도했으나 권한 검사에서 차단되어 실행하지 않았고, 토큰 권한은 바뀌지 않음
+  - 결정(사용자 선택): 워크플로 파일을 제외한 나머지(vite.config.js, README, DEVLOG)를 먼저 푸시하고, 워크플로 파일은 GitHub 웹(Add file → Create new file)에서 직접 추가
+- **로컬 검증(배포 전, GitHub Pages와 같은 하위 경로로 서비스):** 모든 요청 200(HTML/JS/CSS가 각각 다른 크기와 Content-Type), 화면 렌더링, 히어로 데모·기능 카드 3장, 파비콘 경로, Open Library 검색 20건, 서재 담기, 국립중앙도서관 선택 시 인증키 입력창 — 10/10 통과, 깨진 요청 0, 콘솔 오류 0. 개발 서버(`/`)도 10/10 통과. `npm run lint` 통과
+- **보고서(결과보고서 docx) 영향:** "웹서비스 실행 주소" 칸이 "배포하지 않음"으로 되어 있으므로 위 주소로 고쳐야 함

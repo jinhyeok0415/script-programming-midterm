@@ -52,7 +52,15 @@ npm run lint       # ESLint 검사
 > **ESLint 9로 고정한 이유:** 최신 ESLint 10은 `eslint-plugin-react`가 아직 지원하지 않아 설치가 충돌합니다.
 > **인터넷 연결이 필요합니다:** 책 검색과 표지 이미지는 Open Library에서 가져옵니다.
 
-## 5. 폴더 구조
+## 5. 배포 (GitHub Pages)
+
+- **주소:** https://jinhyeok0415.github.io/script-programming-midterm/
+- **방식:** `main` 브랜치에 푸시하면 GitHub Actions(`.github/workflows/deploy.yml`)가 `npm ci` → `npm run lint` → `npm run build`를 실행하고 빌드 결과(`dist/`)를 배포합니다. 배포에 필요한 비밀값(Secrets)은 없습니다(인증키는 접속자가 화면에서 직접 입력).
+- **저장소 설정:** Settings → Pages → Source를 **GitHub Actions**로 설정해야 합니다. `Deploy from a branch`로 두면 빌드하지 않은 소스(`index.html`이 `/src/main.jsx`를 가리킴)가 그대로 배포되어 **빈 화면**이 나옵니다.
+- **경로(base):** GitHub Pages는 `/<저장소 이름>/` 아래에서 서비스되므로 `vite.config.js`에서 빌드·preview에 `base: '/script-programming-midterm/'`를 적용했습니다(개발 서버는 `/`). 저장소 이름을 바꾸면 `vite.config.js`의 `REPO_BASE`도 바꿔야 합니다.
+- **로컬에서 배포 결과 확인:** `npm run build && npm run preview` 후 http://localhost:4173/script-programming-midterm/ 로 접속합니다.
+
+## 6. 폴더 구조
 
 ```
 bookmark/
@@ -61,6 +69,7 @@ bookmark/
 ├─ vite.config.js
 ├─ eslint.config.js
 ├─ README.md
+├─ .github/workflows/deploy.yml   # GitHub Pages 배포 (빌드 후 dist 배포)
 ├─ .env.example                   # 개발자용 환경변수 예시 (npm run check:nl 전용, 앱은 읽지 않음)
 ├─ scripts/check-nl-api.mjs       # 국립중앙도서관 API 연결 점검 (npm run check:nl)
 ├─ DEVLOG.md                      # 단계별 개발 기록 · 오류 해결 과정
@@ -95,7 +104,7 @@ bookmark/
 데이터 모델: `{ id, title, authors, year, coverId, coverUrl, source, status, rating, memo, finishedAt, createdAt }`
 (`coverUrl`은 국내 도서관 API의 표지 주소, `source`는 `openlibrary` · `nl` · `manual`)
 
-## 6. 외부 API · 외부 라이브러리 출처
+## 7. 외부 API · 외부 라이브러리 출처
 
 ### 외부 API: Open Library
 - 검색: `https://openlibrary.org/search.json?q={검색어}&limit=20&fields=key,title,author_name,first_publish_year,cover_i,number_of_pages_median`
@@ -119,12 +128,12 @@ bookmark/
 - **디자인 적용 범위:** 히어로 데모·기능 카드·빈 서재 일러스트만 stageshow로 만든 "가짜(authored)" 화면입니다. 검색·서재·모달 등 실제 기능 UI는 직접 만든 React 컴포넌트이며, 같은 디자인 토큰(`stageLook.css`)으로 시각 언어를 맞췄습니다.
 - **그 밖의 패키지:** `lucide-react`(kit이 쓰는 아이콘), 개발 도구는 `package.json` 참고.
 
-## 7. 개발 기록
+## 8. 개발 기록
 
 - [`DEVLOG.md`](DEVLOG.md) — 단계별 요청·산출물·오류 해결 과정(오류 현상 → 메시지 → 원인 → 수정 → 재실행 결과)
 - [`src/components/hero/REHEARSAL.md`](src/components/hero/REHEARSAL.md) — stageshow 검수 기록(참고한 gold 예제, 바꾼 점, 확인하지 못한 점)
 
-## 8. 알려진 한계
+## 9. 알려진 한계
 
 - 되돌리기는 마지막 삭제 1건만 지원합니다.
 - 서재 데이터는 브라우저(`localStorage`)에만 저장되므로 기기·브라우저 간에 공유되지 않습니다.
