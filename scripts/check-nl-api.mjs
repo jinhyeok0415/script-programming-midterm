@@ -45,8 +45,8 @@ async function call(key, params) {
 const key = readEnvKey()
 if (!key) {
   console.log('인증키가 없어요. 아래 중 하나로 설정한 뒤 다시 실행하세요.')
-  console.log('  1) .env.example 을 복사해 .env.local 을 만들고 NL_CERT_KEY=발급받은키 를 채운다')
-  console.log('  2) 한 번만 쓸 때:  PowerShell  $env:NL_CERT_KEY="발급받은키"; npm run check:nl')
+  console.log('  1) (권장) 한 번만 쓸 때:  PowerShell  $env:NL_CERT_KEY="발급받은키"; npm run check:nl')
+  console.log('  2) .env.example 을 복사해 .env.local 을 만들고 NL_CERT_KEY=발급받은키 를 채운다 (끝나면 파일을 지우세요)')
   process.exit(1)
 }
 console.log(`인증키 확인: 길이 ${key.length}자 (값은 출력하지 않아요) / 검색어: "${query}"\n`)
