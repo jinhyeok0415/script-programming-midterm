@@ -1,0 +1,73 @@
+/* 책갈피의 룩(look): 앱의 CSS 토큰(tokens.css)을 stageshow 토큰에 연결한다.
+   히어로·기능 카드·빈 상태 일러스트가 모두 .bm 클래스를 달아 같은 시각 언어를 쓴다.
+   (stageshow looks.md "From a codebase": 제품의 토큰을 --ss-* 토큰으로 매핑) */
+.bm .ss-stage {
+  --ss-accent: #2f5d3f;
+  --ss-accent-2: #3d7552;
+  --ss-accent-soft: #e4efe7;
+  --ss-accent-text: #2f5d3f;
+
+  --ss-font: 'Pretendard', 'Noto Sans KR', 'Malgun Gothic', system-ui, -apple-system, sans-serif;
+
+  /* 종이 느낌의 따뜻한 중립색: 창 본문 = 앱 배경, 카드 = 흰색, 스테이지 바탕 = 한 단계 진한 종이색 */
+  --ss-canvas: #faf7f2;
+  --ss-surface: #ffffff;
+  --ss-chrome: #f3eee5;
+  --ss-well: #efe9dd;
+  --ss-raised: #ffffff;
+
+  --ss-line: rgba(43, 39, 35, 0.13);
+  --ss-line-faint: rgba(43, 39, 35, 0.07);
+  --ss-text-strong: #2b2723;
+  --ss-text: #4a443d;
+  --ss-text-faint: #8a8175;
+
+  --ss-radius-sm: 6px;
+  --ss-radius-md: 8px;
+  --ss-radius-lg: 12px;
+}
+
+/* 표지: 이미지 대신 책등이 있는 단색 표지(앱의 "표지 없음" 대체 표지와 같은 계열) */
+.bm .bm-cover {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 52px;
+  border-radius: 3px 5px 5px 3px;
+  background: var(--cover, #5f7390);
+  box-shadow: inset 3px 0 0 rgba(0, 0, 0, 0.14), 0 1px 2px rgba(43, 39, 35, 0.18);
+}
+.bm .bm-cover[data-tone='sage'] { --cover: #7f9c8a; }
+.bm .bm-cover[data-tone='clay'] { --cover: #c49a7c; }
+.bm .bm-cover[data-tone='navy'] { --cover: #5f7390; }
+.bm .bm-cover[data-tone='plum'] { --cover: #8b6f7e; }
+.bm .bm-cover[data-size='sm'] { width: 30px; height: 44px; }
+
+/* 별점: 앱의 StarRating과 같은 별 모양. 채워질 때 색이 부드럽게 바뀐다 */
+.bm .bm-stars { display: inline-flex; gap: 2px; }
+.bm .bm-star {
+  fill: none;
+  stroke: #c8892b;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  transition: fill 0.2s ease;
+}
+.bm .bm-star[data-on] { fill: #c8892b; }
+
+/* 앱 제목·책 제목은 서재 앱처럼 세리프 */
+.bm .bm-title {
+  font-family: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', Georgia, serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ss-text-strong);
+}
+.bm .bm-book {
+  font-family: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+  color: var(--ss-text-strong);
+}
+.bm .bm-author { font-size: 11px; color: var(--ss-text-faint); }
+.bm .bm-memo { font-size: 11px; line-height: 16px; color: var(--ss-text); }
+.bm .bm-label { font-size: 11px; font-weight: 600; color: var(--ss-text); }

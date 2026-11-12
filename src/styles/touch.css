@@ -1,0 +1,17 @@
+/* 터치 기기(손가락)에서는 누르기 쉽도록 조작 요소를 44px 이상으로 키운다.
+   다른 CSS의 기본 크기를 덮어써야 하므로 main.jsx에서 가장 마지막에 불러온다. */
+@media (pointer: coarse) {
+  .btn,
+  .select,
+  .input,
+  .tab,
+  .search-bar__input,
+  .manual__summary,
+  .source__pill,
+  .header__link,
+  .lib-item__actions .btn { min-height: 44px; }
+
+  .stars__btn { min-width: 44px; min-height: 44px; justify-content: center; align-items: center; }
+  .modal__close { width: 44px; height: 44px; }
+  .tab { padding-inline: var(--space-4); }
+}

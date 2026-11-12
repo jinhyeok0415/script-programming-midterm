@@ -1,0 +1,103 @@
+/* 기능 카드(still)와 빈 서재 일러스트 전용 스타일 */
+
+/* ---- 기능 카드 섹션(페이지 쪽 레이아웃) ---- */
+.features { padding-block: var(--space-8) var(--space-4); }
+.features__title { text-align: center; margin-bottom: var(--space-6); }
+.features__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8) var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.features__item { max-width: 420px; width: 100%; margin-inline: auto; }
+.features__visual { margin-bottom: var(--space-3); }
+.features__name { font-size: var(--text-lg); }
+.features__desc { margin-top: var(--space-1); color: var(--color-text-muted); font-size: var(--text-sm); }
+@media (min-width: 1024px) {
+  .features__grid { grid-template-columns: repeat(3, 1fr); }
+  .features__item { max-width: none; }
+}
+
+/* ---- 카드 안의 화면(stage) ---- */
+.bm-still {
+  & .ss-stage {
+    --gutter: 24px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--ss-well);
+  }
+  .ss-row { --ss-row-title: 13px; --ss-row-line: 20px; --ss-row-subtitle: 11px; --ss-row-line-2: 16px; }
+
+  .bm-still__window {
+    position: absolute;
+    top: var(--gutter);
+    left: var(--gutter);
+    width: 312px;
+    height: 300px;
+    box-shadow: var(--ss-shadow-hero);
+  }
+  .bm-still__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+  }
+  .bm-still__field { width: 100%; }
+
+  .bm-still__item { padding-block: 10px; }
+  .bm-still__item + .bm-still__item { border-top: 1px solid var(--ss-line-faint); }
+  .bm-still__extra {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 8px;
+    padding-left: 48px;
+  }
+
+  .bm-stat { display: flex; flex-direction: column; gap: 2px; }
+  .bm-stat__big {
+    font-family: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', Georgia, serif;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 38px;
+    color: var(--ss-text-strong);
+  }
+  .bm-stat__rows { display: flex; flex-direction: column; gap: 10px; }
+  .bm-stat__row { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 12px; }
+  .bm-stat__name { font-size: 11px; color: var(--ss-text); }
+  .bm-stat__avg { display: flex; align-items: center; gap: 10px; }
+  .bm-stat__more { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; border-top: 1px solid var(--ss-line-faint); padding-top: 14px; }
+  .bm-stat__avgnum { font-size: 12px; font-weight: 600; color: var(--ss-text-strong); }
+}
+
+/* ---- 빈 서재 일러스트 ---- */
+.bm-empty {
+  /* 바탕이 되는 페이지가 이미 종이색이므로, 스테이지는 투명하게 두어 창만 떠 보이지 않게 아래로 잘라 낸다 */
+  width: 100%;
+  max-width: 300px;
+  margin-inline: auto;
+  & .ss-stage {
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--ss-well);
+  }
+  .bm-empty__window {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    width: 252px;
+    height: 200px;
+    box-shadow: var(--ss-shadow-ground);
+  }
+  .bm-empty__shelf { display: flex; gap: 12px; padding: 16px 16px 0; }
+  .bm-empty__slot {
+    flex: none;
+    width: 44px;
+    height: 64px;
+    border: 1.5px dashed var(--ss-line);
+    border-radius: 3px 6px 6px 3px;
+  }
+  .bm-empty__plank { height: 6px; margin: 0 12px; border-radius: 3px; background: var(--ss-ink-1, #e6dfd2); }
+}

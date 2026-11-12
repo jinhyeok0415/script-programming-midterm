@@ -1,0 +1,14 @@
+/* 랜딩 영역: 히어로 문구 + 데모, 기능 카드 */
+.hero { padding-block: var(--space-12) var(--space-8); }
+.hero__copy { max-width: 640px; margin-inline: auto; text-align: center; }
+.hero__title { font-size: var(--text-2xl); letter-spacing: -0.02em; text-wrap: balance; }
+.hero__lead { margin-top: var(--space-4); color: var(--color-text-muted); font-size: var(--text-lg); text-wrap: balance; }
+.hero__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-6); }
+.hero__actions .btn { min-height: 44px; padding-inline: var(--space-6); text-decoration: none; }
+.hero__demo { width: 100%; max-width: 960px; margin: var(--space-8) auto 0; }
+
+@media (max-width: 600px) {
+  .hero { padding-block: var(--space-8) var(--space-4); }
+  .hero__lead { font-size: var(--text-base); }
+  .hero__demo { margin-top: var(--space-6); }
+}

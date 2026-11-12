@@ -1,0 +1,143 @@
+/* 히어로 데모 전용 스타일. 모든 규칙은 .bm-hero 아래에 둔다(다른 데모와 클래스가 겹치지 않게). */
+.bm-hero {
+  /* 레이아웃: Pinned, bottom bleed. 창은 위·좌우로 한 칸(gutter)씩 안쪽에서 시작해
+     아래로 잘린다. 상세 모달은 앱에서 하던 대로 창 가운데에 뜬다. */
+  & .ss-stage {
+    --gutter: 48px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--ss-well);
+  }
+
+  /* kit의 Row는 토큰으로 글자 크기를 정한다: 책 제목(세리프)이 잘리지 않도록 토큰만 조정 */
+  .ss-row {
+    --ss-row-title: 13px;
+    --ss-row-line: 20px;
+    --ss-row-subtitle: 11px;
+    --ss-row-line-2: 16px;
+  }
+
+  .bm-window {
+    position: absolute;
+    top: var(--gutter);
+    left: var(--gutter);
+    width: 864px;
+    height: 520px;
+    box-shadow: var(--ss-shadow-hero);
+  }
+
+  .bm-app { display: flex; height: 100%; }
+
+  .bm-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    padding: 18px 20px;
+  }
+  .bm-pane--search { flex: 0 0 392px; border-right: 1px solid var(--ss-line); }
+  .bm-pane--lib { flex: 1; }
+
+  /* ---- 검색 ---- */
+  .bm-field { width: 100%; }
+  .bm-stack { position: relative; }
+  .bm-idle {
+    position: absolute;
+    inset: 0 0 auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    padding-inline: 12px;
+    border: 1px dashed var(--ss-line);
+    border-radius: 12px;
+    color: var(--ss-text-faint);
+    font-size: 11px;
+    text-align: center;
+    /* 결과가 먼저 사라진 뒤에 안내가 나타난다(겹쳐 보이지 않게) */
+    transition: opacity 0.3s ease 0.35s;
+  }
+  .bm-results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(6px);
+    will-change: transform; /* 도착할 때 글자가 미세하게 튀지 않도록 레이어 유지 */
+    transition: opacity 0.4s ease 0.1s, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0.1s;
+  }
+  .bm-stack[data-results] .bm-results { opacity: 1; transform: none; }
+  .bm-stack[data-results] .bm-idle { opacity: 0; transition-delay: 0s; }
+
+  /* ---- 서재 ---- */
+  .bm-libnew { padding-bottom: 12px; border-bottom: 1px solid var(--ss-line-faint); }
+  .bm-fill-row { padding-block: 12px; }
+  .bm-fill-row + .bm-fill-row { border-top: 1px solid var(--ss-line-faint); }
+  .bm-extra {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 8px;
+    padding-left: 48px; /* 표지(36) + 간격(12): 제목 글자 줄에 맞춘다 */
+  }
+
+  /* ---- 상세 모달: 앱의 모달처럼 배경을 어둡게 하고 가운데에 뜬다 ---- */
+  .bm-scrim {
+    position: absolute;
+    top: calc(var(--gutter) + 38px);
+    left: var(--gutter);
+    width: 864px;
+    height: 482px; /* 창 본문 전체. 아래는 스테이지가 잘라 낸다 */
+    z-index: 20;
+    background: rgba(43, 39, 35, 0.38);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .bm-scrim[data-show] { opacity: 1; }
+  .bm-detail {
+    position: absolute;
+    top: calc(var(--gutter) + 38px + 24px);
+    left: calc(var(--gutter) + (864px - 300px) / 2);
+    z-index: 30;
+    width: 300px;
+  }
+  .bm-detail__card { box-shadow: var(--ss-shadow-float); }
+  .bm-detail__head { display: flex; align-items: center; gap: 12px; }
+  .bm-detail__who { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .bm-fieldrow { display: flex; flex-direction: column; gap: 6px; }
+  .bm-fieldrow--inline { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+  .bm-fieldrow--inline .bm-select { flex: 1; max-width: 190px; }
+  .bm-meta { display: inline-flex; align-items: center; gap: 8px; }
+  .bm-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-surface);
+    color: var(--ss-text-strong);
+    font-size: 12px;
+  }
+  .bm-select svg { color: var(--ss-text-faint); }
+  .bm-select[data-hover] { background: var(--ss-chrome); }
+  .bm-detail__foot { display: flex; justify-content: flex-end; }
+
+  /* ---- 컴팩트(358px): 창을 정사각형 이상으로 잘라 보여 주는 두 번째 디자인 ----
+     358×340 스테이지에 창(326)이 위에서 한 칸 안쪽으로 들어가고 아래로 잘린다.
+     보이는 높이(324)가 폭(326)을 넘지 않도록 패널 제목을 숨기고 한 열로 쌓는다. */
+  & .ss-stage[data-layout='compact'] { --gutter: 16px; }
+  & .ss-stage[data-layout='compact'] .bm-window { width: 326px; height: 480px; }
+  & .ss-stage[data-layout='compact'] .bm-app { flex-direction: column; }
+  & .ss-stage[data-layout='compact'] .bm-title { display: none; }
+  & .ss-stage[data-layout='compact'] .bm-pane { padding: 10px 14px; gap: 8px; }
+  & .ss-stage[data-layout='compact'] .bm-pane--search { flex: none; border-right: 0; border-bottom: 1px solid var(--ss-line); }
+  & .ss-stage[data-layout='compact'] .bm-idle { height: 76px; }
+  & .ss-stage[data-layout='compact'] .bm-extra-result,
+  & .ss-stage[data-layout='compact'] .bm-fill-extra { display: none; }
+  & .ss-stage[data-layout='compact'] .bm-scrim { width: 326px; height: 420px; }
+  & .ss-stage[data-layout='compact'] .bm-detail { left: 29px; top: 62px; width: 300px; }
+  & .ss-stage[data-layout='compact'] .bm-fieldrow--memo .bm-label { display: none; }
+}

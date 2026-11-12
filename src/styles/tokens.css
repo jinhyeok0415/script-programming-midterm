@@ -1,0 +1,56 @@
+/* 전역 디자인 토큰: 색, 타이포, 간격, 반경, 그림자.
+   6단계에서 stageshow craft.md 규칙에 맞춰 값을 조정한다. */
+:root {
+  /* 색: 종이 느낌의 따뜻한 중립 + 단일 강조색(짙은 초록) */
+  --color-bg: #faf7f2;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f3eee5;
+  --color-border: #e4ddd0;
+  --color-text: #2b2723;
+  --color-text-muted: #6f675d;
+  --color-accent: #2f5d3f;
+  --color-accent-hover: #244b32;
+  --color-accent-soft: #e4efe7;
+  --color-danger: #a23b32;
+  --color-danger-soft: #f6e4e1;
+  --color-star: #c8892b;
+
+  /* 타이포 */
+  --font-serif: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', Georgia, serif;
+  --font-sans: 'Pretendard', 'Noto Sans KR', 'Malgun Gothic', system-ui, -apple-system, sans-serif;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: clamp(2rem, 5vw, 3rem);
+
+  /* 간격 (4px 기준) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* 모양 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(43, 39, 35, 0.06);
+  --shadow-md: 0 8px 24px rgba(43, 39, 35, 0.12);
+
+  /* 레이아웃 */
+  --container-max: 1120px;
+  --gutter: var(--space-4);
+}
+
+@media (min-width: 601px) {
+  :root { --gutter: var(--space-6); }
+}
+
+@media (min-width: 1024px) {
+  :root { --gutter: var(--space-8); }
+}
