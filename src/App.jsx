@@ -24,11 +24,16 @@ import { createBook, createManualId, filterAndSortBooks, getStats } from './util
 function App() {
   const [library, setLibrary] = useLocalStorage('bookmark.library', [], Array.isArray)
 
-  // 검색 출처(Open Library / 국립중앙도서관). 선택은 localStorage에 저장한다.
-  // 국립중앙도서관 인증키는 화면에서 입력받지 않고 환경변수(.env.local)에서 읽는다(src/api/providers.js).
+  // 검색 출처(Open Library / 국립중앙도서관)와 출처별 인증키. 둘 다 이 브라우저의 localStorage에만 저장한다.
+  // 인증키는 접속자가 화면에서 직접 입력한 본인 키이며, 소스코드·환경변수·빌드 결과에는 들어 있지 않다.
   const [providerId, setProviderId] = useLocalStorage('bookmark.searchProvider', DEFAULT_PROVIDER_ID, isProviderId)
+  const [apiKeys, setApiKeys] = useLocalStorage(
+    'bookmark.apiKeys',
+    {},
+    (value) => value !== null && typeof value === 'object' && !Array.isArray(value),
+  )
   const provider = getProvider(providerId)
-  const search = useBookSearch(provider.id)
+  const search = useBookSearch(provider.id, apiKeys[provider.id])
 
   // 서재 보기 조건
   const [statusFilter, setStatusFilter] = useState(FILTER_ALL)
@@ -96,6 +101,20 @@ function App() {
     showToast(`‘${book.title}’을(를) 복구했어요.`)
   }
 
+  // 인증키 저장 / 삭제
+  const handleSaveKey = (id, key) => {
+    setApiKeys((prev) => ({ ...prev, [id]: key }))
+    showToast(`${getProvider(id).label} 인증키를 저장했어요.`)
+  }
+  const handleClearKey = (id) => {
+    setApiKeys((prev) => {
+      const next = { ...prev }
+      delete next[id]
+      return next
+    })
+    showToast(`${getProvider(id).label} 인증키를 삭제했어요.`)
+  }
+
   const handleResetFilters = () => {
     setStatusFilter(FILTER_ALL)
     setLibraryQuery('')
@@ -115,6 +134,9 @@ function App() {
             providers={PROVIDER_LIST}
             providerId={provider.id}
             onProviderChange={setProviderId}
+            apiKeys={apiKeys}
+            onSaveKey={handleSaveKey}
+            onClearKey={handleClearKey}
           />
           <SearchBar
             value={search.query}

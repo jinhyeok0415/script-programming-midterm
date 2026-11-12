@@ -12,8 +12,8 @@ const SEARCH_URL = 'https://www.nl.go.kr/seoji/SearchApi.do'
 const PAGE_SIZE = 20
 
 const ERROR_MESSAGES = {
-  '010': '인증키가 설정되지 않았어요. (.env.local 의 VITE_NL_CERT_KEY)',
-  '011': '인증키가 올바르지 않아요. 설정한 키(.env.local 의 VITE_NL_CERT_KEY)를 확인해 주세요.',
+  '010': '인증키가 입력되지 않았어요.',
+  '011': '인증키가 올바르지 않아요. 입력한 키를 다시 확인해 주세요.',
   '012': '검색에 필요한 값이 빠졌어요.',
   '013': '한 번에 가져올 수 있는 건수를 넘었어요.',
   '000': '국립중앙도서관 서버에 문제가 생겼어요. 잠시 후 다시 시도해 주세요.',

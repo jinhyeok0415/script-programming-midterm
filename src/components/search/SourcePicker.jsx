@@ -1,6 +1,50 @@
-// 검색 출처 선택(라디오). 선택한 출처를 쓸 수 없는 상태(인증키 미설정)면 그 사실을 안내한다.
-// 인증키는 화면에서 입력받지 않고 환경변수(.env.local)로 설정한다.
-function SourcePicker({ providers, providerId, onProviderChange }) {
+import { useState } from 'react'
+
+// 인증키 입력 폼. 입력 중인 값(draft)은 이 폼 안에서만 들고 있다가 "저장"을 눌러야 앱에 반영한다.
+// (키를 한 글자씩 바꿀 때마다 검색이 다시 실행되지 않도록)
+// 부모에서 key={provider.id}를 주어 출처가 바뀌면 입력값이 비워진다.
+function KeyForm({ provider, hasKey, onSaveKey, onClearKey }) {
+  const [draft, setDraft] = useState('')
+  const inputId = `source-key-${provider.id}`
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const key = draft.trim()
+    if (!key) return
+    onSaveKey(provider.id, key)
+    setDraft('')
+  }
+
+  return (
+    <form className="source__key" onSubmit={handleSubmit}>
+      <label className="field__label" htmlFor={inputId}>{provider.label} {provider.keyLabel}</label>
+      <div className="source__key-row">
+        <input
+          id={inputId}
+          className="input"
+          type="password"
+          autoComplete="off"
+          spellCheck={false}
+          value={draft}
+          placeholder={hasKey ? '저장된 키가 있어요. 바꾸려면 새 키를 붙여 넣으세요' : '본인의 인증키를 붙여 넣으세요'}
+          onChange={(event) => setDraft(event.target.value)}
+        />
+        <button className="btn btn--primary" type="submit" disabled={!draft.trim()}>저장</button>
+        {hasKey && (
+          <button className="btn" type="button" onClick={() => onClearKey(provider.id)}>키 삭제</button>
+        )}
+      </div>
+      <p className="source__hint" role="status">
+        {hasKey ? '✓ 인증키가 저장되어 있어요. ' : ''}
+        키는 이 브라우저(localStorage)에만 저장되고 {provider.label} 서버로만 전달돼요. 공용 PC라면 사용 후 &lsquo;키 삭제&rsquo;를 눌러 주세요.{' '}
+        <a href={provider.keyGuideUrl} target="_blank" rel="noreferrer">인증키 발급 안내</a>
+      </p>
+    </form>
+  )
+}
+
+// 검색 출처 선택(라디오) + 선택한 출처가 인증키를 요구하면 키 입력 폼을 보여 준다.
+function SourcePicker({ providers, providerId, onProviderChange, apiKeys, onSaveKey, onClearKey }) {
   const provider = providers.find((item) => item.id === providerId) ?? providers[0]
 
   return (
@@ -22,10 +66,14 @@ function SourcePicker({ providers, providerId, onProviderChange }) {
         ))}
       </div>
       <p className="source__desc">{provider.description}</p>
-      {!provider.available && (
-        <p className="source__notice" role="status">
-          {provider.label} 검색은 아직 인증키가 설정되지 않아 사용할 수 없어요. 지금은 다른 검색 출처를 이용해 주세요.
-        </p>
+      {provider.needsKey && (
+        <KeyForm
+          key={provider.id}
+          provider={provider}
+          hasKey={Boolean(apiKeys[provider.id])}
+          onSaveKey={onSaveKey}
+          onClearKey={onClearKey}
+        />
       )}
     </fieldset>
   )
